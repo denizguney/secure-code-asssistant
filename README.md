@@ -4,7 +4,7 @@ Secure Code Assistant is a powerful Visual Studio Code extension designed for de
 
 ---
 
-## 🚀 Features
+##  Features
 
 ### 1. Smart XSS Shield (`!sec-xss`)
 * Automatically provides a robust HTML Entity Encoding function to sanitize user inputs.
@@ -18,7 +18,7 @@ Secure Code Assistant is a powerful Visual Studio Code extension designed for de
 
 ---
 
-## 🛠️ Installation & Usage
+##  Installation & Usage
 
 1. Open any TypeScript (`.ts`) or JavaScript (`.js`) file inside Visual Studio Code.
 2. Type `!` followed by your desired security trigger shortcut (e.g., `!sec-xss` or `!sec-url`).
@@ -26,5 +26,5 @@ Secure Code Assistant is a powerful Visual Studio Code extension designed for de
 
 ---
 
-## 🛡️ Security & Disclaimer
+##  Security & Disclaimer
 This project is developed with a defensive security mindset to actively encourage secure coding practices aligned with OWASP Top 10 standards. Continuous updates will be rolled out to patch and support emerging secure code architecture.

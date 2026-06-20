@@ -27,3 +27,8 @@ let match;
   }
   diagnosticCollection.set(document.uri , diagnostics);
 }
+
+vscode.workspace.onDidChangeTextDocument(event => {
+  checkSqlInjection(event.document, diagnosticCollection); //SQL Kalkanı
+                                         checkSSRF(event.document,diagnosticCollection);
+});

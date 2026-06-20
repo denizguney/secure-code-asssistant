@@ -1,70 +1,44 @@
 import * as vscode from 'vscode';
 
-// Eklenti ilk aktif edildiğinde bu fonksiyon tetiklenir 
 export function activate(context: vscode.ExtensionContext) {
-    
-    console.log('Tebrikler dostum, "secure-code-assistant" şu an aktif ve siber kalkan hazır!');
+    console.log('Tebrikler dostum, "secure-code-assistant" aktif ve siber kalkan hazır!');
 
-    // Geliştirici "Secure Code Assistant: Start" komutunu çalıştırdığında tetiklenecek ana kod
-    const disposable = vscode.commands.registerCommand('secure-code-assistant.start', () => {
-        // Editörün sağ alt köşesinde siber araştırmacı tarzında bir bildirim çıkarıyoruz
-        vscode.window.showInformationMessage('Güvenli Kod Asistanı Aktif Edildi! Siber kalkanlar devrede dostum.');
+    // 1. Ana Komut Kaydı
+    const startCommand = vscode.commands.registerCommand('secure-code-assistant.start', () => {
+        vscode.window.showInformationMessage('Güvenli Kod Asistanı Aktif Edildi! Siber kalkanlar devrede.');
     });
+    context.subscriptions.push(startCommand);
 
-    context.subscriptions.push(disposable);
+    // 2. XSS Kalkanı (CompletionItemProvider)
+    const xssShieldProvider = vscode.languages.registerCompletionItemProvider(
+        { scheme: 'file', language: 'typescript' }, // Sadece TS dosyalarında çalışsın
+        {
+            provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+                const completionItem = new vscode.CompletionItem("!sec-xss", vscode.CompletionItemKind.Snippet);
+                
+                completionItem.insertText = new vscode.SnippetString(
+                    'function secureXssClean(input: string): string {\n' +
+                    '    if (!input) return "";\n' +
+                    '    return input\n' +
+                    '        .replace(/&/g, "&amp;")\n' +
+                    '        .replace(/</g, "&lt;")\n' +
+                    '        .replace(/>/g, "&gt;")\n' +
+                    '        .replace(/"/g, "&quot;")\n' +
+                    '        .replace(/\'/g, "&#x27;")\n' +
+                    '        .replace(/\\//g, "&#x2F;");\n' +
+                    '}\n' +
+                    '// Örnek Kullanım: const temizVeri = secureXssClean(kullaniciGirdisi);'
+                );
+
+                completionItem.documentation = new vscode.MarkdownString("Yazılımcıyı XSS (Cross-Site Scripting) açıklarına karşı koruyan siber güvenlik kalkanı.");
+                
+                return [completionItem];
+            }
+        },
+        '!' // Tetikleyici karakterimiz
+    );
+
+    context.subscriptions.push(xssShieldProvider);
 }
 
-// Eklenti kapatıldığında veya devre dışı bırakıldığında burası çalışır
-
-const xssShieldProvider = vscode.languages.registerCompletionItemProvider({
-
-    providerCompletionItems(document: vscode.TextDocument, position: vscode_Position){
-
-        const completionItem = new vscode.completionItem("!sec-xss", vscode.completionItemKind.Snippet);
-
-        completionItem.InsertText = new vscode.SnippetString([
-
-                                '/**',
-                    ' * @function secureXssClean',
-                    ' * @description Girdideki tehlikeli HTML karakterlerini temizleyerek XSS zafiyetini engeller dostum. ',
-                    ' */',
-                    'function secureXssClean(input: string): string {',
-                    '    if (!input) return "";',
-                    '    return input',
-                    '        .replace(/&/g, "&amp;")',
-                    '        .replace(/</g, "&lt;")',
-                    '        .replace(/>/g, "&gt;")',
-                    '        .replace(/"/g, "&quot;")',
-                    "        .replace(/'/g, '&#x27;')",
-                    '        .replace(/\\//g, "&#x2F;");',
-                    '// Örnek Kullanım: const temizVeri = secureXssClean(kullaniciGirdisi);'
-
-                    
-
-        ])
-        
-    }
-})
-
-             
-
-                completionItem.documentation = new vscode.MarkdownString("Yazılımcıyı XSS (Cross-Site Scripting) açıklarına karşı koruyan siber güvenlik kalkanı.");{
-
-                return [completionItem];({
-                })
-        '!' // Tetikleyici karakterimiz
-    
-
-    // XSS Kalkanını VS Code'a kaydediyoruz 
-    context.subscriptions.push(xssShieldProvider);({
-                })
-
-// Eklenti kapatıldığında burası çalışır
-
-export function deactivate() {
-
-
-
-                }
-            }
-        
+export function deactivate() {}
